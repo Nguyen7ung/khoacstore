@@ -11,7 +11,8 @@ class AdminController extends Controller
 {
     public function thongtinuser (Request $request){
         $kq = quantri::where('Email', $request->Email)->first();
-        if (Hash::check($request->MatKhau, $kq->MatKhau)) {
+        if (md5($request->MatKhau) == $kq->MatKhau){
+        //if (Hash::check($request->MatKhau, $kq->MatKhau)) {
             $request->session()->put('admin.id', $kq->MaNV);
             $request->session()->put('admin.level', $kq->PhanQuyen);
             $request->session()->put('admin.hoten', $kq->TenNV);
@@ -20,5 +21,11 @@ class AdminController extends Controller
         }else{
             return view ('Admin.login')->with('thongbao', 'Tên đăng nhập hoặc mật khẩu không đúng');    
         }
+    }
+    
+     public function thoatuser (){
+        session_start();
+        session_destroy();
+            return redirect('quantri/login');           
     }
 }

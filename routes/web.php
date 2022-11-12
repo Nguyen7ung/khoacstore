@@ -20,7 +20,9 @@ use App\Http\Controllers\Admin\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\admin\SanPhamController;
 
-//use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\ResetUserPassword;
+use App\Http\Controllers\AuthenticateUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,12 +55,42 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-// User dùng Jetstream
-//Route::get('/register', [RegisteredUserController::class, 'create'])->middleware(['guest'])->name('register');
-//Route::post('/register', [RegisteredUserController::class, 'store'])->middleware(['guest']);
     
 // ------------------------------- Back-End ------------------------------------
 
+Route::group(['prefix'=>'quantri'],function (){  
+    // Login 1    
+    Route::get('/', function (){
+        return view ('Admin.index');
+    })->Middleware([checklogin::class]);
+    Route::get('/login', function (){
+        return view ('Admin.login');
+    });
+    Route::post('/login', [AdminController::class, 'thongtinuser'])->withoutMiddleware([checklogin::class]);
+    Route::get('/thoat', [AdminController::class, 'thoatuser'])->withoutMiddleware([checklogin::class]);
+
+    // Login với Jetstream
+    Route::get('/register', function (){
+    return view ('auth.register');
+    });
+
+    Route::post('/register{array?}', [CreateNewUser::class, 'create'])->middleware(['guest'])->name('register');
+    Route::get('/login2', function(){
+        return view ('auth.login');
+    })->name('login');
+    Route::post('/login2', [AuthenticateUser::class, 'boot'])->name('login');
+
+    //Route::get('/register', [CreateNewUser::class, 'create'])->middleware(['guest'])->name('register');
+    //Route::post('/register', [RegisterController::class, 'store'])->middleware(['guest']);
+
+    // Sản Phẩm
+    Route::resource('/sanpham', SanPhamController::class);
+    Route::post('/sanpham/mapl', [SanPhamController::class, 'LayMaPhanLoai'])->name('lay.maphanloai');
+    Route::post('/sanpham/masp', [SanPhamController::class, 'TaoMaSanPham'])->name('tao.masanpham');
+    Route::post('/sanpham/upload', [SanPhamController::class, 'LayDuongDanHinh']);
+  
+});
+/*
 Route::group(['prefix'=>'quantri', 'middleware'=> ['checklogin']],function (){  
     // Login    
     Route::get('/', function (){
@@ -70,7 +102,6 @@ Route::group(['prefix'=>'quantri', 'middleware'=> ['checklogin']],function (){
     Route::post('/login', [AdminController::class, 'thongtinuser'])->withoutMiddleware([checklogin::class]);
     //Route::post('/login', [LoginController::class, 'authenticate'])->withoutMiddleware([checklogin::class]);
 
-
     // Sản Phẩm
     Route::resource('/sanpham', SanPhamController::class);
     Route::post('/sanpham/mapl', [SanPhamController::class, 'LayMaPhanLoai'])->name('lay.maphanloai');
@@ -78,3 +109,4 @@ Route::group(['prefix'=>'quantri', 'middleware'=> ['checklogin']],function (){
     Route::post('/sanpham/upload', [SanPhamController::class, 'LayDuongDanHinh']);
   
 });
+ */

@@ -20,8 +20,9 @@ class checklogin
         if ($request->session()->exists('admin')) { 
             return $next($request);     
         } else {
-            return redirect('quantri/login2');           
+            //return redirect('quantri/login2');           
             //return redirect()->route('login'); 
+            return redirect('quantri/login');           
         }         
     }
 }

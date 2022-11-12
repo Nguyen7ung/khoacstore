@@ -7,7 +7,7 @@
         </a>
     </li>
     <li>
-        <a href="thoat.php">
+        <a href="{{URL::to('quantri/thoat')}}">
             <i class="material-icons">text_fields</i>
             <span>Thoát</span>
         </a>
